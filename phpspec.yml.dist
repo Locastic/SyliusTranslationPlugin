@@ -1,0 +1,4 @@
+suites:
+    main:
+        namespace: Locastic\SyliusTranslationPlugin
+        psr4_prefix: Locastic\SyliusTranslationPlugin
