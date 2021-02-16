@@ -35,13 +35,7 @@ final class ArrayUtils
         return ksort($array);
     }
 
-    /**
-     * @param string $translationKey
-     * @param mixed $value
-     *
-     * @return array
-     */
-    public static function translationKeyToArray(string $translationKey, string $value): array
+    public static function keyToArray(string $translationKey, string $value): array
     {
         $result = [];
         $path = '';

@@ -8,8 +8,6 @@ use Locastic\SyliusTranslationPlugin\Model\TranslationInterface;
 
 interface TranslationKeyToTranslationTransformerInterface
 {
-    public function transform(string $domain, string $key, array $values): TranslationInterface;
-
     /**
      * @return array|TranslationInterface[]
      */

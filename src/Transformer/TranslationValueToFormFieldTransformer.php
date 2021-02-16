@@ -19,32 +19,27 @@ final class TranslationValueToFormFieldTransformer implements TranslationValueTo
             return '';
         }
 
-        $translationDomain = $translation->getDomain();
-        $translationTheme = $translationDomain !== null ? $translationDomain->getTheme() : null;
-
         return sprintf(
             '[%s][%s][%s][%s]',
-            $translationDomain !== null ? $translationDomain->getName() : 'null',
-            $translationTheme !== null ? $translationTheme->getName() : 'null',
-            $translationValue->getLocaleCode(),
-            $translation->getKey()
+            $translationValue->getTheme(),
+            $translation->getDomainName(),
+            $translation->getKey(),
+            $translationValue->getLocaleCode()
         );
     }
 
     public function reverseTransform(array $submittedField): ?TranslationValueInterface
     {
-        foreach ($submittedField as $domain => $domainInfo) {
-            foreach ($domainInfo as $theme => $themeInfo) {
-                foreach ($themeInfo as $locale => $localeInfo) {
-                    foreach ($localeInfo as $key => $value) {
-                        $translationDomain = new TranslationDomain();
-                        $translationDomain->setName($domain);
+        foreach ($submittedField as $theme => $themeInfo) {
+            foreach ($themeInfo as $domain => $domainInfo) {
+                foreach ($domainInfo as $key => $keyInfo) {
+                    foreach ($keyInfo as $locale => $value) {
                         $translation = new Translation();
-                        $translation->setDomain($translationDomain);
+                        $translation->setDomainName($domain);
                         $translation->setKey($key);
 
                         $translationValue = new TranslationValue();
-                        $translationValue->setTheme($theme !== 'null' ? $theme : null);
+                        $translationValue->setTheme($theme);
                         $translationValue->setLocaleCode($locale);
                         $translationValue->setValue($value);
 

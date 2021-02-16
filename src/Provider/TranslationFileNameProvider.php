@@ -17,11 +17,11 @@ final class TranslationFileNameProvider implements TranslationFileNameProviderIn
             throw new TranslationNotFoundException();
         }
 
-        if (null === $translationValue->getTranslation()->getDomain() || null === $translationValue->getLocaleCode()) {
+        if (null === $translationValue->getTranslation()->getDomainName() || null === $translationValue->getLocaleCode()) {
             throw new GenerateTranslationFileNameException();
         }
 
-        return sprintf('%s.%s.yaml', $translationValue->getTranslation()->getDomain()->getName(), $translationValue->getLocaleCode());
+        return sprintf('%s.%s.yaml', $translationValue->getTranslation()->getDomainName(), $translationValue->getLocaleCode());
     }
 
     public function getFromValues(string $directory, string $domain, string $locale, string $format): string

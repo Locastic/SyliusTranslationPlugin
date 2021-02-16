@@ -56,7 +56,7 @@ class TranslationController implements TranslationControllerInterface
         $adapter = new ArrayAdapter($translations);
         $pagerFanta = new Pagerfanta($adapter);
 
-        $pagerFanta->setMaxPerPage(100);
+        $pagerFanta->setMaxPerPage(10);
         $pagerFanta->setCurrentPage($request->query->get('page', 1));
 
         return new Response($this->twig->render('@LocasticSyliusTranslationPlugin/Admin/Translations/index.html.twig', [

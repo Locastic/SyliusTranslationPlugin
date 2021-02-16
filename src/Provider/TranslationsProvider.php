@@ -25,13 +25,16 @@ final class TranslationsProvider implements TranslationsProviderInterface
 
     private string $appTranslationsDirectory;
 
+    private ThemesProviderInterface $themeProvider;
+
     public function __construct(
         array $enabledBundles,
         TranslationDomainsProviderInterface $translationDomainsProvider,
         LocalesProviderInterface $localesProvider,
         FileLocator $fileLocator,
         TranslationFileNameProviderInterface $translationFileNameProvider,
-        string $appTranslationsDirectory
+        string $appTranslationsDirectory,
+        ThemesProviderInterface $themeProvider
     ) {
         $this->bundles = $enabledBundles;
         $this->translationDomainsProvider = $translationDomainsProvider;
@@ -39,15 +42,28 @@ final class TranslationsProvider implements TranslationsProviderInterface
         $this->fileLocator = $fileLocator;
         $this->translationFileNameProvider = $translationFileNameProvider;
         $this->appTranslationsDirectory = $appTranslationsDirectory;
+        $this->themeProvider = $themeProvider;
     }
 
     public function getTranslations(string $defaultLocaleCode, array $locales): array
     {
-        $translations = [];
+        $bundleTranslations = [];
         foreach ($this->bundles as $bundleName => $bundle) {
-            $translations = array_replace_recursive($translations, $this->getBundleTranslations($bundleName, $defaultLocaleCode, $locales));
+            $bundleTranslations = array_replace_recursive(
+                $bundleTranslations,
+                $this->getBundleTranslations($bundleName, $defaultLocaleCode, $locales)
+            );
         }
-        $translations = array_replace_recursive($translations, $this->getDirectoryTranslations($this->appTranslationsDirectory, $defaultLocaleCode, $locales));
+        $appTranslations = $this->getDirectoryTranslations($this->appTranslationsDirectory, $defaultLocaleCode, $locales);
+
+        $themes = $this->themeProvider->getAll();
+        $translations = [];
+        foreach ($themes as $theme) {
+            $translationDirectory = $theme->getPath() . '/translations/';
+            $themeTranslations = $this->getDirectoryTranslations($translationDirectory, $defaultLocaleCode, $locales);
+
+            $translations[$theme->getName()] = array_replace_recursive($bundleTranslations, $appTranslations, $themeTranslations);
+        }
 
         ArrayUtils::recursiveKsort($translations);
 
@@ -147,7 +163,7 @@ final class TranslationsProvider implements TranslationsProviderInterface
 
         switch ($type) {
             case self::TYPE_XML:
-                //TODO: XML
+                throw new \LogicException('This has not been implemented yet');
                 return [];
             case self::TYPE_YAML:
             default:
@@ -157,23 +173,14 @@ final class TranslationsProvider implements TranslationsProviderInterface
 
     public function getXmlTranslations(string $directory, string $domain, string $locale): array
     {
-        $bundleTranslations = [];
+        $translations = [];
 
         $formats = ['xml'];
         foreach ($formats as $format) {
             $fileName = $this->translationFileNameProvider->getFromValues($directory, $domain, $locale, $format);
-            if (file_exists($fileName)) {
-                die('?');
-
-                if (!array_key_exists($domain, $bundleTranslations)) {
-                    $bundleTranslations[$domain] = [];
-                }
-                $translations = ArrayUtils::arrayFlatten($translations);
-
-                $bundleTranslations[$domain] = array_replace_recursive($bundleTranslations[$domain], $translations);
-            }
+            $translations = array_replace_recursive($translations, $this->getTranslationFileContent($fileName, self::TYPE_XML));
         }
 
-        return $bundleTranslations;
+        return $translations;
     }
 }

@@ -19,13 +19,11 @@
     </div>
 
     <div class="sylius-grid-wrapper">
-        <div class="ui segment spaceless sylius-grid-table-wrapper">
-            <div class="ui hidden divider"></div>
-            <div class="sylius-grid-wrapper">
-                <div class="sylius-grid-nav">
-                    <div class="sylius-grid-nav__pagination">
-                        {{ pagination.simple(translations) }}
-                    </div>
+        <div class="ui hidden divider"></div>
+        <div class="sylius-grid-wrapper">
+            <div class="sylius-grid-nav">
+                <div class="sylius-grid-nav__pagination">
+                    {{ pagination.simple(translations) }}
                 </div>
             </div>
         </div>
@@ -33,7 +31,7 @@
         {% if translations|length > 0 %}
             <div class="ui segment spaceless sylius-grid-table-wrapper">
                 <div class="ui styled fluid accordion multiple">
-                    {% for row in translations %}
+                    {% for translation in translations %}
                         <div class="title">
                             <div class="ui stackable grid">
                                 <div class="ui one wide column">
@@ -41,28 +39,46 @@
                                 </div>
                                 <div class="ui three wide column">
                                     <div class="ui blue label">{{ 'locastic_sylius_translation.ui.message_domain'|trans }}</div>
-                                    {{ row.domain.name }}
+                                    {{ translation.domainName }}
                                 </div>
-                                <div class="ui five wide column">
+                                <div class="ui eight wide column">
                                     <div class="ui black label">{{ 'locastic_sylius_translation.ui.message_id'|trans }}</div>
-                                    {{ row.key }}
+                                    {{ translation.key }}
                                 </div>
                             </div>
                         </div>
+
                         <div class="content ui form js-save-translations" data-url="{{ path('locastic_sylius_translation_admin_ajax_update') }}">
                             <div class="ui equal width grid">
-                                {% for translationValue in row.values %}
-                                    <div class="ui column">
-                                        <div class="field">
-                                            <label for="translations_{{ row.domain.name }}_{{ row.key }}_{{ translationValue.localeCode }}">
-                                                {{ flags.fromLocaleCode(translationValue.localeCode) }}
-                                                <b>{{ translationValue.localeCode }}</b>
-                                            </label>
-                                            <textarea id="translations_{{ row.domain.name }}_{{ row.key }}_{{ translationValue.localeCode }}"
-                                                      name="translations{{ translationValue|locastic_sylius_translation_value_field_name }}"
-                                                      rows="6" cols="45" class="ui input js-translation-input">
-                                                {{- translationValue.value -}}
-                                            </textarea>
+                                {% set themes = locastic_sylius_translation_get_themes() %}
+                                <div class="ui top attached tabular menu">
+                                    {% for theme in themes %}
+                                        <a class="item{% if 0 == loop.index0 %} active{% endif %}" data-tab="{{ theme.name|replace({'/': '_'}) }}">
+                                            {{ theme.name }}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+
+                                {% for theme in themes %}
+                                    <div class="ui bottom attached tab segment{% if 0 == loop.index0 %} active{% endif %} form js-save-translations"
+                                         data-url="{{ path('locastic_sylius_translation_admin_ajax_update') }}"
+                                         data-tab="{{ theme.name|replace({'/': '_'}) }}">
+                                        <div class="ui equal width grid">
+                                            {% for translationValue in translation.valuesByTheme(theme) %}
+                                                <div class="ui column">
+                                                    <div class="field">
+                                                        <label for="translations_{{ translation.domainName }}_{{ translation.key }}_{{ translationValue.localeCode }}">
+                                                            {{ flags.fromLocaleCode(translationValue.localeCode) }}
+                                                            <b>{{ translationValue.localeCode }}</b>
+                                                        </label>
+                                                        <textarea id="translations_{{ translation.domainName }}_{{ translation.key }}_{{ translationValue.localeCode }}"
+                                                                  name="translations{{ translationValue|locastic_sylius_translation_value_field_name }}"
+                                                                  rows="6" cols="45" class="ui input js-translation-input">
+                                                            {{- translationValue.value -}}
+                                                        </textarea>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
                                         </div>
                                     </div>
                                 {% endfor %}

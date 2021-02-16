@@ -4,31 +4,23 @@ declare(strict_types=1);
 
 namespace Locastic\SyliusTranslationPlugin\Model;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
 final class Translation implements TranslationInterface
 {
-    private ?TranslationDomainInterface $domain = null;
+    private ?string $domainName = null;
 
     private ?string $key = null;
 
-    /** @var Collection|TranslationValueInterface[] */
-    private Collection $values;
+    /** @var array|TranslationValueInterface[] */
+    private array $values = [];
 
-    public function __construct()
+    public function getDomainName(): ?string
     {
-        $this->values = new ArrayCollection();
+        return $this->domainName;
     }
 
-    public function getDomain(): ?TranslationDomainInterface
+    public function setDomainName(?string $domainName): void
     {
-        return $this->domain;
-    }
-
-    public function setDomain(?TranslationDomainInterface $domain): void
-    {
-        $this->domain = $domain;
+        $this->domainName = $domainName;
     }
 
     public function getKey(): ?string
@@ -41,34 +33,61 @@ final class Translation implements TranslationInterface
         $this->key = $key;
     }
 
-    public function getValues(): Collection
+    public function getValues(): array
     {
         return $this->values;
     }
 
-    public function hasValues(): bool
+    public function getValuesByTheme(string $themeName): array
     {
-        return !$this->getValues()->isEmpty();
+        return \array_filter($this->getValues(), function (TranslationValueInterface $translationValue) use ($themeName): bool {
+            return $themeName === $translationValue->getTheme();
+        });
     }
 
-    public function hasValue(TranslationValueInterface $value): bool
+    public function getKeyByLocaleAndTheme(string $localeCode, string $themeName): ?int
     {
-        return $this->getValues()->contains($value);
+        foreach ($this->getValues() as $key => $value) {
+            if ($value->getLocaleCode() === $localeCode && $value->getTheme() === $themeName) {
+                return $key;
+            }
+        }
+
+        return null;
     }
 
-    public function addValue(TranslationValueInterface $value): void
+    public function hasLocaleAndTheme(string $localeCode, string $themeName): bool
     {
-        if (!$this->hasValue($value)) {
-            $this->values->add($value);
-            $value->setTranslation($this);
+        return null !== $this->getKeyByLocaleAndTheme($localeCode, $themeName);
+    }
+
+    public function hasValue(TranslationValueInterface $translationValue): bool
+    {
+        return $this->hasLocaleAndTheme($translationValue->getLocaleCode(), $translationValue->getTheme()) !== null;
+    }
+
+    public function addValue(TranslationValueInterface $translationValue): void
+    {
+        if (!$this->hasLocaleAndTheme($translationValue->getLocaleCode(), $translationValue->getTheme())) {
+            $this->values[] = $translationValue;
+            $translationValue->setTranslation($this);
         }
     }
 
-    public function removeValue(TranslationValueInterface $value): void
+    public function removeValue(TranslationValueInterface $translationValue): void
     {
-        if ($this->hasValue($value)) {
-            $this->values->removeElement($value);
-            $value->setTranslation(null);
+        if (null !== $key = $this->getKeyByLocaleAndTheme($translationValue->getLocaleCode(), $translationValue->getTheme())) {
+            unset($this->values[$key]);
+            $translationValue->setTranslation(null);
         }
+    }
+
+    public function getValueByLocaleAndTheme(string $localeCode, string $themeName): ?string
+    {
+        if (null !== $key = $this->getKeyByLocaleAndTheme($localeCode, $themeName)) {
+            return $this->values[$key];
+        }
+
+        return null;
     }
 }

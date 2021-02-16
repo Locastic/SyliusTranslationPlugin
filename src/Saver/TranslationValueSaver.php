@@ -6,6 +6,7 @@ namespace Locastic\SyliusTranslationPlugin\Saver;
 
 use Locastic\SyliusTranslationPlugin\Model\TranslationValueInterface;
 use Locastic\SyliusTranslationPlugin\Provider\TranslationFileNameProviderInterface;
+use Locastic\SyliusTranslationPlugin\Provider\TranslationFilePathProviderInterface;
 use Locastic\SyliusTranslationPlugin\Provider\TranslationsProviderInterface;
 use Locastic\SyliusTranslationPlugin\Utils\ArrayUtils;
 use Symfony\Component\Filesystem\Filesystem;
@@ -19,15 +20,19 @@ final class TranslationValueSaver implements TranslationValueSaverInterface
 
     private TranslationFileNameProviderInterface $translationFileNameProvider;
 
+    private TranslationFilePathProviderInterface $translationFilePathProvider;
+
     private TranslationsProviderInterface $translationsProvider;
 
     public function __construct(
         string $directory,
         TranslationFileNameProviderInterface $translationFileNameProvider,
+        TranslationFilePathProviderInterface $translationFilePathProvider,
         TranslationsProviderInterface $translationsProvider
     ) {
         $this->directory = $directory;
         $this->translationFileNameProvider = $translationFileNameProvider;
+        $this->translationFilePathProvider = $translationFilePathProvider;
         $this->translationsProvider = $translationsProvider;
     }
 
@@ -36,11 +41,14 @@ final class TranslationValueSaver implements TranslationValueSaverInterface
         $translation = $translationValue->getTranslation();
 
         $fileName = $this->translationFileNameProvider->getFileName($translationValue);
+        $filePath = $this->translationFilePathProvider->getFilePath($translationValue);
         $existingTranslations = $this->translationsProvider->getTranslations($translationValue->getLocaleCode(), [$translationValue->getLocaleCode()]);
-        $existingTranslations = array_key_exists($translation->getDomain()->getName(), $existingTranslations) ? $existingTranslations[$translation->getDomain()->getName()] : [];
+        $existingTranslations = $existingTranslations[$translationValue->getTheme()][$translation->getDomainName()] ?? [];
 
         $newTranslations = array_replace_recursive($existingTranslations, [
-            $translation->getKey() => $translationValue->getValue()
+            $translation->getKey() => [
+                $translationValue->getLocaleCode() => $translationValue->getValue(),
+            ],
         ]);
 
         $result = [];
@@ -51,12 +59,12 @@ final class TranslationValueSaver implements TranslationValueSaverInterface
             if (!\is_string($newTranslation[$translationValue->getLocaleCode()])) {
                 continue;
             }
-            $result = array_replace_recursive($result, ArrayUtils::translationKeyToArray($newTranslationKey, $newTranslation[$translationValue->getLocaleCode()]));
+            $result = array_replace_recursive($result, ArrayUtils::keyToArray($newTranslationKey, $newTranslation[$translationValue->getLocaleCode()]));
         }
         ArrayUtils::recursiveKsort($result);
 
         $filesystem = new Filesystem();
-        $filesystem->dumpFile($this->directory . '/' . $fileName, Yaml::dump($result, 8));
+        $filesystem->dumpFile($filePath . $fileName, Yaml::dump($result, 8));
     }
 
     public function saveTranslations(array $translations): void
@@ -69,7 +77,7 @@ final class TranslationValueSaver implements TranslationValueSaverInterface
                     $files[$fileName] = [];
                 }
 
-                $files[$fileName] = array_replace_recursive($files[$fileName], ArrayUtils::translationKeyToArray($translation->getKey(), $translationValue->getValue()));
+                $files[$fileName] = array_replace_recursive($files[$fileName], ArrayUtils::keyToArray($translation->getKey(), $translationValue->getValue()));
             }
         }
 

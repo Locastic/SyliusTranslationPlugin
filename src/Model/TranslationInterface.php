@@ -4,28 +4,27 @@ declare(strict_types=1);
 
 namespace Locastic\SyliusTranslationPlugin\Model;
 
-use Doctrine\Common\Collections\Collection;
-
 interface TranslationInterface
 {
-    public function getDomain(): ?TranslationDomainInterface;
+    public function getDomainName(): ?string;
 
-    public function setDomain(?TranslationDomainInterface $domain): void;
+    public function setDomainName(?string $domainName): void;
 
     public function getKey(): ?string;
 
     public function setKey(?string $key): void;
 
-    /**
-     * @return Collection|TranslationValueInterface[]
-     */
-    public function getValues(): Collection;
+    public function getValues(): array;
 
-    public function hasValues(): bool;
+    public function getKeyByLocaleAndTheme(string $localeCode, string $themeName): ?int;
 
-    public function hasValue(TranslationValueInterface $value): bool;
+    public function hasLocaleAndTheme(string $localeCode, string $themeName): bool;
 
-    public function addValue(TranslationValueInterface $value): void;
+    public function hasValue(TranslationValueInterface $translationValue): bool;
 
-    public function removeValue(TranslationValueInterface $value): void;
+    public function addValue(TranslationValueInterface $translationValue): void;
+
+    public function removeValue(TranslationValueInterface $translationValue): void;
+
+    public function getValueByLocaleAndTheme(string $localeCode, string $themeName): ?string;
 }

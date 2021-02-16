@@ -5,41 +5,39 @@ declare(strict_types=1);
 namespace Locastic\SyliusTranslationPlugin\Transformer;
 
 use Locastic\SyliusTranslationPlugin\Model\Translation;
-use Locastic\SyliusTranslationPlugin\Model\TranslationDomain;
-use Locastic\SyliusTranslationPlugin\Model\TranslationInterface;
 use Locastic\SyliusTranslationPlugin\Model\TranslationValue;
 
 final class TranslationKeyToTranslationTransformer implements TranslationKeyToTranslationTransformerInterface
 {
-    public function transform(string $domain, string $key, array $values): TranslationInterface
-    {
-        $translation = new Translation();
-
-        $translationDomain = new TranslationDomain();
-        $translationDomain->setName($domain);
-        $translation->setDomain($translationDomain);
-        $translation->setKey($key);
-        foreach ($values as $localeCode => $value) {
-            if (!\is_string($value)) {
-                // TODO: Apparently value can sometimes be array here. We should understand why
-                continue;
-            }
-            $translationValue = new TranslationValue();
-            $translationValue->setLocaleCode($localeCode);
-            $translationValue->setValue($value);
-
-            $translation->addValue($translationValue);
-        }
-
-        return $translation;
-    }
-
     public function transformMultiple(array $translationKeys): array
     {
+        $translationsList = [];
         $translations = [];
-        foreach ($translationKeys as $domain => $translationData) {
-            foreach ($translationData as $key => $values) {
-                $translations[] = $this->transform($domain, $key, $values);
+        foreach ($translationKeys as $themeName => $themeData) {
+            foreach ($themeData as $domainName => $domainData) {
+                foreach ($domainData as $key => $values) {
+                    $translationKey = $domainName . '.' . $key;
+                    if (!\array_key_exists($translationKey, $translationsList)) {
+                        $translation = new Translation();
+                        $translation->setDomainName($domainName);
+                        $translation->setKey($key);
+
+                        $translationsList[$translationKey] = $translation;
+
+                        $translations[] = $translation;
+                    }
+
+                    $translation = $translationsList[$translationKey];
+
+                    foreach ($values as $localeCode => $value) {
+                        $translationValue = new TranslationValue();
+                        $translationValue->setLocaleCode($localeCode);
+                        $translationValue->setTheme($themeName);
+                        $translationValue->setValue('' . $value);
+
+                        $translation->addValue($translationValue);
+                    }
+                }
             }
         }
 
