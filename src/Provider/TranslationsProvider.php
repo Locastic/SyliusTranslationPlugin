@@ -51,8 +51,6 @@ final class TranslationsProvider implements TranslationsProviderInterface
 
         ArrayUtils::recursiveKsort($translations);
 
-        dump($translations['flashes']);
-
         return $translations;
     }
 

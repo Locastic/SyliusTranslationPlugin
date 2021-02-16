@@ -11,7 +11,7 @@ use Locastic\SyliusTranslationPlugin\Utils\ArrayUtils;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 use function array_key_exists;
-use function array_merge_recursive;
+use function array_replace_recursive;
 
 final class TranslationValueSaver implements TranslationValueSaverInterface
 {
@@ -39,7 +39,7 @@ final class TranslationValueSaver implements TranslationValueSaverInterface
         $existingTranslations = $this->translationsProvider->getTranslations($translationValue->getLocaleCode(), [$translationValue->getLocaleCode()]);
         $existingTranslations = array_key_exists($translation->getDomain()->getName(), $existingTranslations) ? $existingTranslations[$translation->getDomain()->getName()] : [];
 
-        $newTranslations = array_merge_recursive($existingTranslations, [
+        $newTranslations = array_replace_recursive($existingTranslations, [
             $translation->getKey() => $translationValue->getValue()
         ]);
 
@@ -51,7 +51,7 @@ final class TranslationValueSaver implements TranslationValueSaverInterface
             if (!\is_string($newTranslation[$translationValue->getLocaleCode()])) {
                 continue;
             }
-            $result = array_merge_recursive($result, ArrayUtils::translationKeyToArray($newTranslationKey, $newTranslation[$translationValue->getLocaleCode()]));
+            $result = array_replace_recursive($result, ArrayUtils::translationKeyToArray($newTranslationKey, $newTranslation[$translationValue->getLocaleCode()]));
         }
         ArrayUtils::recursiveKsort($result);
 
@@ -61,6 +61,21 @@ final class TranslationValueSaver implements TranslationValueSaverInterface
 
     public function saveTranslations(array $translations): void
     {
+        $files = [];
+        foreach ($translations as $translation) {
+            foreach ($translation->getValues() as $translationValue) {
+                $fileName = $this->translationFileNameProvider->getFileName($translationValue);
+                if (!\array_key_exists($fileName, $files)) {
+                    $files[$fileName] = [];
+                }
 
+                $files[$fileName] = array_replace_recursive($files[$fileName], ArrayUtils::translationKeyToArray($translation->getKey(), $translationValue->getValue()));
+            }
+        }
+
+        $filesystem = new Filesystem();
+        foreach ($files as $fileName => $fileTranslations) {
+            $filesystem->dumpFile($this->directory . '/' . $fileName, Yaml::dump($fileTranslations, 10));
+        }
     }
 }

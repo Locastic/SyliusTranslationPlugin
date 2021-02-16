@@ -61,18 +61,9 @@ final class WriteTranslationValuesCommand extends Command
         $this->writeln('Starting to dump translations', OutputInterface::VERBOSITY_NORMAL);
 
         $translations = $this->translationsProvider->getTranslations($this->localeCode, $this->locales);
-//        $translations = $this->translationTransformer->transformMultiple($translations);
-//        foreach ($translations as $translation) {
-//            $this->writeLn(sprintf('  Working with domain %s', $translation->getDomain()), OutputInterface::VERBOSITY_VERBOSE);
-//            $this->writeLn(sprintf('    Working with key %s', $translation->getKey()), OutputInterface::VERBOSITY_VERY_VERBOSE);
-//            foreach ($translation->getValues() as $translationValue) {
-//                $this->writeLn(sprintf('      Working with locale %s', $translationValue->getLocaleCode()), OutputInterface::VERBOSITY_DEBUG);
-//                $this->writeLn(sprintf('      Working with value %s', $translationValue->getValue()), OutputInterface::VERBOSITY_DEBUG);
-//                $this->translationValueSaver->saveTranslationValue($translationValue);
-//            }
-//        }
-//
-//        $this->writeln('Dumped translations', OutputInterface::VERBOSITY_NORMAL);
+        $translations = $this->translationTransformer->transformMultiple($translations);
+
+        $this->translationValueSaver->saveTranslations($translations);
 
         return 0;
     }
