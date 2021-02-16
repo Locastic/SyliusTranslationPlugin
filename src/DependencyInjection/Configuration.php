@@ -14,13 +14,22 @@ final class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder('locastic_sylius_translation_plugin');
+        $treeBuilder = new TreeBuilder('locastic_sylius_translation');
         if (\method_exists($treeBuilder, 'getRootNode')) {
             $rootNode = $treeBuilder->getRootNode();
         } else {
             // BC layer for symfony/config 4.1 and older
-            $rootNode = $treeBuilder->root('locastic_sylius_translation_plugin');
+            $rootNode = $treeBuilder->root('locastic_sylius_translation');
         }
+
+        $rootNode
+            ->children()
+                ->scalarNode('default_locale')
+                    ->defaultValue('en_US')
+                ->end()
+                ->arrayNode('locales')->scalarPrototype()->end()->end()
+            ->end()
+        ;
 
         return $treeBuilder;
     }

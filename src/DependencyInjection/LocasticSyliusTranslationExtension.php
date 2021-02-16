@@ -19,6 +19,9 @@ final class LocasticSyliusTranslationExtension extends Extension
         $config = $this->processConfiguration($this->getConfiguration([], $container), $config);
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
 
+        $container->setParameter('locastic_sylius_translation.default_locale', $config['default_locale']);
+        $container->setParameter('locastic_sylius_translation.locales', $config['locales']);
+
         $loader->load('services.xml');
     }
 }

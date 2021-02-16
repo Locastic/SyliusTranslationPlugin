@@ -1,0 +1,8 @@
+locastic_sylius_translation:
+    ui:
+        manage_translations: Here you can translate all of your website static content
+        menu:
+            translations: Translations
+        message_domain: Domain
+        message_id: Message ID
+        translations: Translations

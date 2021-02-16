@@ -1,0 +1,119 @@
+{% extends '@SyliusAdmin/layout.html.twig' %}
+
+{% import '@SyliusUi/Macro/pagination.html.twig' as pagination %}
+{% import '@SyliusUi/Macro/buttons.html.twig' as buttons %}
+{% import '@SyliusUi/Macro/messages.html.twig' as messages %}
+{% import '@SyliusUi/Macro/table.html.twig' as table %}
+{% import '@SyliusUi/Macro/flags.html.twig' as flags %}
+
+{% set event_prefix = 'locastic_sylius_translations' %}
+
+{% block content %}
+    <div class="ui stackable two column grid">
+        <div class="column">
+            {% include '@LocasticSyliusTranslationPlugin/Admin/Translations/Index/_headerTitle.html.twig' %}
+            {% include '@LocasticSyliusTranslationPlugin/Admin/Translations/Index/_breadcrumb.html.twig' %}
+
+            {{ sylius_template_event([event_prefix ~ '.header'], _context) }}
+        </div>
+    </div>
+
+    <div class="sylius-grid-wrapper">
+        <div class="ui segment spaceless sylius-grid-table-wrapper">
+            <div class="ui hidden divider"></div>
+            <div class="sylius-grid-wrapper">
+                <div class="sylius-grid-nav">
+                    <div class="sylius-grid-nav__pagination">
+                        {{ pagination.simple(translations) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if translations|length > 0 %}
+            <div class="ui segment spaceless sylius-grid-table-wrapper">
+                <div class="ui styled fluid accordion multiple">
+                    {% for row in translations %}
+                        <div class="title">
+                            <div class="ui stackable grid">
+                                <div class="ui one wide column">
+                                    <i class="dropdown icon"></i>
+                                </div>
+                                <div class="ui three wide column">
+                                    <div class="ui blue label">{{ 'locastic_sylius_translation.ui.message_domain'|trans }}</div>
+                                    {{ row.domain.name }}
+                                </div>
+                                <div class="ui five wide column">
+                                    <div class="ui black label">{{ 'locastic_sylius_translation.ui.message_id'|trans }}</div>
+                                    {{ row.key }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content ui form js-save-translations" data-url="{{ path('locastic_sylius_translation_admin_ajax_update') }}">
+                            <div class="ui equal width grid">
+                                {% for translationValue in row.values %}
+                                    <div class="ui column">
+                                        <div class="field">
+                                            <label for="translations_{{ row.domain.name }}_{{ row.key }}_{{ translationValue.localeCode }}">
+                                                {{ flags.fromLocaleCode(translationValue.localeCode) }}
+                                                <b>{{ translationValue.localeCode }}</b>
+                                            </label>
+                                            <textarea id="translations_{{ row.domain.name }}_{{ row.key }}_{{ translationValue.localeCode }}"
+                                                      name="translations{{ translationValue|locastic_sylius_translation_value_field_name }}"
+                                                      rows="6" cols="45" class="ui input js-translation-input">
+                                                {{- translationValue.value -}}
+                                            </textarea>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            {{ messages.info('sylius.ui.no_results_to_display') }}
+        {% endif %}
+        {{ pagination.simple(translations) }}
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    {{ sylius_template_event([event_prefix ~ '.stylesheets'], _context) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    {{ sylius_template_event([event_prefix ~ '.javascripts'], _context) }}
+
+    <script>
+        $(document).ready(() => {
+            $('.accordion.multiple').accordion({
+                exclusive: false,
+            });
+
+            let $body = $('body');
+            $body.on('focusout', '.js-translation-input', (event) => {
+                const $element = $(event.target);
+                const value = $element.val();
+
+                const $formContainer = $('.js-save-translations');
+                const saveUrl = $formContainer.data('url');
+                let data = {};
+                data[$element.attr('name')] = value;
+
+                $.ajax({
+                    url: saveUrl,
+                    method: 'POST',
+                    data,
+                    success: (response) => {
+                        console.log(response);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

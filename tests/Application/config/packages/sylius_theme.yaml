@@ -1,0 +1,7 @@
+sylius_theme:
+    sources:
+        filesystem:
+            directories:
+                - "%kernel.project_dir%/themes"
+    translations:
+        enabled: true

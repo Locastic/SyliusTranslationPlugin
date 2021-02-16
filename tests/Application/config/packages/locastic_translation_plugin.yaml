@@ -1,0 +1,6 @@
+locastic_sylius_translation:
+    default_locale: de_DE
+    locales:
+        - de_DE
+        - en_GB
+        - fr_FR

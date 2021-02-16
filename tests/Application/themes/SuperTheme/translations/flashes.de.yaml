@@ -1,0 +1,3 @@
+sylius:
+    cart:
+        add_item: TEST 2
