@@ -64,7 +64,7 @@
                                          data-url="{{ path('locastic_sylius_translation_admin_ajax_update') }}"
                                          data-tab="{{ theme.name|replace({'/': '_'}) }}">
                                         <div class="ui equal width grid">
-                                            {% for translationValue in translation.valuesByTheme(theme) %}
+                                            {% for translationValue in translation.valuesByTheme(theme.name) %}
                                                 <div class="ui column">
                                                     <div class="field">
                                                         <label for="translations_{{ translation.domainName }}_{{ translation.key }}_{{ translationValue.localeCode }}">
