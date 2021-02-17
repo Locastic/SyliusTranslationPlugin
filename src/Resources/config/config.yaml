@@ -1,0 +1,6 @@
+sylius_ui:
+    events:
+        locastic_sylius_translations.javascripts:
+            blocks:
+                javascripts:
+                    template: '@LocasticSyliusTranslationPlugin/Admin/Translations/_javascripts.html.twig'

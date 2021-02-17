@@ -23,6 +23,9 @@
         </service>
         <service id="Locastic\SyliusTranslationPlugin\Controller\TranslationControllerInterface" alias="locastic_sylius_translation.controller.translations" />
 
+        <!-- Forms -->
+        <service id="Locastic\SyliusTranslationPlugin\Form\Type\SearchTranslationType" />
+
         <!-- MenuBuilder -->
         <service id="Locastic\SyliusTranslationPlugin\MenuBuilder\AdminMenuListener">
             <tag name="kernel.event_listener" event="sylius.menu.admin.main" method="addTranslationMenuItem" />

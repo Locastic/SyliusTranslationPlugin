@@ -14,6 +14,9 @@ interface TranslationInterface
 
     public function setKey(?string $key): void;
 
+    /**
+     * @return array|TranslationValueInterface[]
+     */
     public function getValues(): array;
 
     public function getKeyByLocaleAndTheme(string $localeCode, string $themeName): ?int;

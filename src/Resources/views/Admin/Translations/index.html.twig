@@ -20,6 +20,13 @@
 
     <div class="sylius-grid-wrapper">
         <div class="ui hidden divider"></div>
+        {{ form_start(searchForm) }}
+        <div class="ui icon input">
+            {{ form_widget(searchForm.search, {'attr': {'placeholder': searchForm.search.vars.label}}) }}
+            <i class="search icon"></i>
+        </div>
+        {{ form_end(searchForm) }}
+        <div class="ui hidden divider"></div>
         <div class="sylius-grid-wrapper">
             <div class="sylius-grid-nav">
                 <div class="sylius-grid-nav__pagination">
@@ -48,7 +55,7 @@
                             </div>
                         </div>
 
-                        <div class="content ui form js-save-translations" data-url="{{ path('locastic_sylius_translation_admin_ajax_update') }}">
+                        <div class="content ui form js-save-translations{% if searching %} active{% endif %}" data-url="{{ path('locastic_sylius_translation_admin_ajax_update') }}">
                             <div class="ui equal width grid">
                                 {% set themes = locastic_sylius_translation_get_themes() %}
                                 <div class="ui top attached tabular menu">
@@ -104,32 +111,4 @@
     {{ parent() }}
 
     {{ sylius_template_event([event_prefix ~ '.javascripts'], _context) }}
-
-    <script>
-        $(document).ready(() => {
-            $('.accordion.multiple').accordion({
-                exclusive: false,
-            });
-
-            let $body = $('body');
-            $body.on('focusout', '.js-translation-input', (event) => {
-                const $element = $(event.target);
-                const value = $element.val();
-
-                const $formContainer = $('.js-save-translations');
-                const saveUrl = $formContainer.data('url');
-                let data = {};
-                data[$element.attr('name')] = value;
-
-                $.ajax({
-                    url: saveUrl,
-                    method: 'POST',
-                    data,
-                    success: (response) => {
-                        console.log(response);
-                    }
-                });
-            });
-        });
-    </script>
 {% endblock %}

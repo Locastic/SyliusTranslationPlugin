@@ -1,4 +1,6 @@
 locastic_sylius_translation:
+    form:
+        search_translation: Search for the sting...
     ui:
         manage_translations: Here you can translate all of your website static content
         menu:

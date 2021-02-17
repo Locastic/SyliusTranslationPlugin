@@ -1,6 +1,6 @@
 locastic_sylius_translations_admin_index:
     path: /
-    methods: [ GET ]
+    methods: [ GET, POST ]
     controller: locastic_sylius_translation.controller.translations::indexAction
 
 locastic_sylius_translation_admin_ajax_update:
