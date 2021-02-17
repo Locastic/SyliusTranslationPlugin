@@ -84,6 +84,7 @@ class TranslationController implements TranslationControllerInterface
 
         if (null !== $search->getSearch() && $pagerFanta->getNbResults() > 0) {
             $pagerFanta->setMaxPerPage($pagerFanta->getNbResults());
+            $request->query->remove('page');
         } else {
             $pagerFanta->setMaxPerPage(50);
         }
