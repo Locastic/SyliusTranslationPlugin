@@ -66,6 +66,9 @@ class TranslationController implements TranslationControllerInterface
         $translations = $this->translationTransformer->transformMultiple($translations);
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
             $translations = \array_filter($translations, function (TranslationInterface $translation) use ($search): bool {
+                if (\preg_match('/'. $search->getSearch() . '/i', $translation->getKey())) {
+                    return true;
+                }
                 foreach ($translation->getValues() as $translationValue) {
                     if (\preg_match('/'. $search->getSearch() . '/i', $translationValue->getValue())) {
                         return true;
