@@ -9,7 +9,9 @@ use Locastic\SyliusTranslationPlugin\Utils\ArrayUtils;
 use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\Yaml\Yaml;
 use function array_key_exists;
+use function array_key_first;
 use function array_replace_recursive;
+use function in_array;
 
 final class TranslationsProvider implements TranslationsProviderInterface
 {
@@ -62,7 +64,9 @@ final class TranslationsProvider implements TranslationsProviderInterface
             $translationDirectory = $theme->getPath() . '/translations/';
             $themeTranslations = $this->getDirectoryTranslations($translationDirectory, $defaultLocaleCode, $locales);
 
-            $translations[$theme->getName()] = array_replace_recursive($bundleTranslations, $appTranslations, $themeTranslations);
+            $mergedTranslations = array_replace_recursive($bundleTranslations, $appTranslations, $themeTranslations);
+            $mergedTranslations = $this->fillMissingKeys($mergedTranslations, $locales);
+            $translations[$theme->getName()] = $mergedTranslations;
         }
 
         ArrayUtils::recursiveKsort($translations);
@@ -179,6 +183,23 @@ final class TranslationsProvider implements TranslationsProviderInterface
         foreach ($formats as $format) {
             $fileName = $this->translationFileNameProvider->getFromValues($directory, $domain, $locale, $format);
             $translations = array_replace_recursive($translations, $this->getTranslationFileContent($fileName, self::TYPE_XML));
+        }
+
+        return $translations;
+    }
+
+    private function fillMissingKeys(array $translations, array $locales): array
+    {
+        foreach ($translations as $key => $value) {
+            if (in_array(array_key_first($value), $locales)) {
+                foreach ($locales as $locale) {
+                    if (!array_key_exists($locale, $value)) {
+                        $translations[$key][$locale] = '';
+                    }
+                }
+            } else {
+                $translations[$key] = $this->fillMissingKeys($value, $locales);
+            }
         }
 
         return $translations;
