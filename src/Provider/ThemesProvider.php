@@ -10,8 +10,6 @@ use Sylius\Bundle\ThemeBundle\Repository\ThemeRepositoryInterface;
 
 final class ThemesProvider implements ThemesProviderInterface
 {
-    public const NAME_DEFAULT = 'app/default';
-
     private ThemeRepositoryInterface $themeRepository;
 
     private ThemeFactoryInterface $themeFactory;

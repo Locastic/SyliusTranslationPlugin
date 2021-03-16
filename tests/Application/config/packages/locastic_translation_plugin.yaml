@@ -1,3 +1,6 @@
+imports:
+    - { resource: "@LocasticSyliusTranslationPlugin/Resources/config/config.yaml" }
+
 locastic_sylius_translation:
     default_locale: de_DE
     locales:

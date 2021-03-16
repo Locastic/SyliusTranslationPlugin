@@ -8,6 +8,8 @@ use Sylius\Bundle\ThemeBundle\Model\ThemeInterface;
 
 interface ThemesProviderInterface
 {
+    public const NAME_DEFAULT = 'app/default';
+
     /**
      * @return array|ThemeInterface[]
      */
