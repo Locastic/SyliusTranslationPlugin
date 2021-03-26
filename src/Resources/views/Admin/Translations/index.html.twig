@@ -16,6 +16,9 @@
 
             {{ sylius_template_event([event_prefix ~ '.header'], _context) }}
         </div>
+        <div class="ui right aligned column">
+            <a class="ui button red" href="{{ path('locastic_sylius_translations_admin_clear_cache') }}">{{ 'locastic_sylius_translation.ui.clear_cache'|trans }}</a>
+        </div>
     </div>
 
     <div class="sylius-grid-wrapper">

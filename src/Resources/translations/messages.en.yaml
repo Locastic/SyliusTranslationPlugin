@@ -2,6 +2,7 @@ locastic_sylius_translation:
     form:
         search_translation: Search for the sting...
     ui:
+        clear_cache: Clear cache
         manage_translations: Here you can translate all of your website static content
         menu:
             translations: Translations

@@ -21,6 +21,11 @@
         </service>
 
         <!-- Controllers -->
+        <service id="locastic_sylius_translation.controller.clear_cache_action"
+                 class="Locastic\SyliusTranslationPlugin\Controller\ClearCacheAction">
+            <tag name="controller.service_arguments" />
+        </service>
+
         <service id="locastic_sylius_translation.controller.translations"
                  class="Locastic\SyliusTranslationPlugin\Controller\TranslationController">
             <bind key="string $localeCode">%locastic_sylius_translation.default_locale%</bind>
