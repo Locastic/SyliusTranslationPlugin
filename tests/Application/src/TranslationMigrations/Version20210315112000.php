@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Locastic\SyliusTranslationPlugin\TranslationMigration;
+namespace Tests\Locastic\SyliusTranslationPlugin\TranslationMigrations;
 
 use Locastic\SyliusTranslationPlugin\Provider\ThemesProviderInterface;
 use Locastic\SyliusTranslationPlugin\TranslationMigration\AbstractTranslationMigration;

@@ -41,6 +41,9 @@ final class ArrayUtils
         $path = '';
         $explodedKey = explode('.', $translationKey);
         foreach ($explodedKey as $key) {
+            if (empty($key)) {
+                continue;
+            }
             $path .= '[' . $key . ']';
         }
         $propertyAccessor = new PropertyAccessor();
