@@ -17,6 +17,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
+use function mb_strpos;
 
 class TranslationController implements TranslationControllerInterface
 {
@@ -66,11 +67,11 @@ class TranslationController implements TranslationControllerInterface
         $translations = $this->translationTransformer->transformMultiple($translations);
         if ($searchForm->isSubmitted() && $searchForm->isValid()) {
             $translations = \array_filter($translations, function (TranslationInterface $translation) use ($search): bool {
-                if (\preg_match('/'. $search->getSearch() . '/i', $translation->getKey())) {
+                if (false !== mb_strpos($translation->getKey(), $search->getSearch())) {
                     return true;
                 }
                 foreach ($translation->getValues() as $translationValue) {
-                    if (\preg_match('/'. $search->getSearch() . '/i', $translationValue->getValue())) {
+                    if (false !== mb_strpos($translationValue->getValue(), $search->getSearch())) {
                         return true;
                     }
                 }
