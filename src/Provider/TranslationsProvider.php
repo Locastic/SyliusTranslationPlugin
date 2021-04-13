@@ -63,6 +63,7 @@ final class TranslationsProvider implements TranslationsProviderInterface
         foreach ($themes as $theme) {
             $translationDirectory = $theme->getPath() . '/translations/';
             $themeTranslations = $this->getDirectoryTranslations($translationDirectory, $defaultLocaleCode, $locales);
+            $themeTranslations = $this->removeEmptyKeys($themeTranslations);
 
             $mergedTranslations = array_replace_recursive($bundleTranslations, $appTranslations, $themeTranslations);
             $mergedTranslations = $this->fillMissingKeys($mergedTranslations, $locales);
@@ -199,6 +200,19 @@ final class TranslationsProvider implements TranslationsProviderInterface
                 }
             } else {
                 $translations[$key] = $this->fillMissingKeys($value, $locales);
+            }
+        }
+
+        return $translations;
+    }
+
+    public function removeEmptyKeys(array $translations): array
+    {
+        foreach ($translations as $key => $value) {
+            if (empty($value)) {
+                unset($translations[$key]);
+            } elseif (is_array($value)) {
+                $translations[$key] = $this->removeEmptyKeys($value);
             }
         }
 

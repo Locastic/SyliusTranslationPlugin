@@ -25,4 +25,6 @@ interface TranslationsProviderInterface
     public function getTranslationFileContent(string $filePath, string $type = self::TYPE_YAML): array;
 
     public function getXmlTranslations(string $directory, string $domain, string $locale): array;
+
+    public function removeEmptyKeys(array $translations): array;
 }

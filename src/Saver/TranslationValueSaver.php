@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Locastic\SyliusTranslationPlugin\Saver;
 
 use Locastic\SyliusTranslationPlugin\Model\TranslationValueInterface;
+use Locastic\SyliusTranslationPlugin\Provider\ThemesProviderInterface;
 use Locastic\SyliusTranslationPlugin\Provider\TranslationFileNameProviderInterface;
 use Locastic\SyliusTranslationPlugin\Provider\TranslationFilePathProviderInterface;
 use Locastic\SyliusTranslationPlugin\Provider\TranslationsProviderInterface;
@@ -50,6 +51,11 @@ final class TranslationValueSaver implements TranslationValueSaverInterface
                 $translationValue->getLocaleCode() => $translationValue->getValue(),
             ],
         ]);
+
+        // If we submit theme translations, just remove empty keys to fallback to default ones
+        if ($translationValue->getTheme() !== ThemesProviderInterface::NAME_DEFAULT) {
+            $newTranslations = $this->translationsProvider->removeEmptyKeys($newTranslations);
+        }
 
         $result = [];
         foreach ($newTranslations as $newTranslationKey => $newTranslation) {
