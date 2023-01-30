@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Locastic\SyliusTranslationPlugin\Twig;
 
-use Locastic\SyliusTranslationPlugin\Provider\ThemesProviderInterface;
+use Locastic\SymfonyTranslationBundle\Provider\ThemesProviderInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 

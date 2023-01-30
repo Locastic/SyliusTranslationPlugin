@@ -5,4 +5,4 @@ locastic_sylius_translations_admin_paths:
 locastic_sylius_translations_admin_clear_cache:
     path: /clear-cache
     methods: [ GET ]
-    controller: locastic_sylius_translation.controller.clear_cache_action
+    controller: Locastic\SyliusTranslationPlugin\Controller\Admin\ClearCacheAction

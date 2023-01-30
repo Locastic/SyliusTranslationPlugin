@@ -11,9 +11,12 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 final class LocasticSyliusTranslationExtension extends AbstractResourceExtension
 {
-    public function load(array $config, ContainerBuilder $container): void
+    /**
+     * @psalm-suppress UnusedVariable
+     */
+    public function load(array $configs, ContainerBuilder $container): void
     {
-        $config = $this->processConfiguration($this->getConfiguration([], $container), $config);
+        $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
 
         $container->setParameter('locastic_sylius_translation.default_locale', $config['default_locale']);

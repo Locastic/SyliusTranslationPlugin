@@ -4,38 +4,9 @@ declare(strict_types=1);
 
 namespace Locastic\SyliusTranslationPlugin\Model;
 
-use DateTime;
+use Locastic\SymfonyTranslationBundle\Model\TranslationMigration as BaseTranslationMigration;
+use Sylius\Component\Resource\Model\ResourceInterface;
 
-class TranslationMigration implements TranslationMigrationInterface
+class TranslationMigration extends BaseTranslationMigration implements ResourceInterface
 {
-    private ?int $id = null;
-
-    private ?string $number = null;
-
-    private ?DateTime $createdAt = null;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getNumber(): ?string
-    {
-        return $this->number;
-    }
-
-    public function setNumber(?string $number): void
-    {
-        $this->number = $number;
-    }
-
-    public function getCreatedAt(): ?DateTime
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(?DateTime $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
 }

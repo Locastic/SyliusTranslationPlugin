@@ -1,115 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <defaults autowire="true" autoconfigure="true">
-            <bind key="array $enabledBundles">%kernel.bundles%</bind>
-            <bind key="string $translationMigrationDirectory">%kernel.project_dir%/src/TranslationMigrations/</bind>
-            <bind key="Doctrine\Migrations\Finder\GlobFinder $translationFinder" type="service" id="locastic_sylius_translation.finder.migrations" />
         </defaults>
 
-        <!-- Commands -->
-        <service id="locastic_sylius_translation.command.write_translation_values"
-                 class="Locastic\SyliusTranslationPlugin\Command\WriteTranslationValuesCommand">
-            <bind key="string $localeCode">%locastic_sylius_translation.default_locale%</bind>
-            <bind key="array $locales">%locastic_sylius_translation.locales%</bind>
-        </service>
-
-        <service id="locastic_sylius_translation.command.migration_migrate"
-                 class="Locastic\SyliusTranslationPlugin\Command\ExecuteMigrationCommand">
-        </service>
-
         <!-- Controllers -->
-        <service id="locastic_sylius_translation.controller.clear_cache_action"
-                 class="Locastic\SyliusTranslationPlugin\Controller\ClearCacheAction">
+        <service id="Locastic\SyliusTranslationPlugin\Controller\Admin\ClearCacheAction">
             <tag name="controller.service_arguments" />
         </service>
 
-        <service id="locastic_sylius_translation.controller.translations"
-                 class="Locastic\SyliusTranslationPlugin\Controller\TranslationController">
-            <bind key="string $localeCode">%locastic_sylius_translation.default_locale%</bind>
-            <bind key="array $locales">%locastic_sylius_translation.locales%</bind>
+        <service id="Locastic\SyliusTranslationPlugin\Controller\Admin\IndexTranslationAction">
             <tag name="controller.service_arguments" />
         </service>
-        <service id="Locastic\SyliusTranslationPlugin\Controller\TranslationControllerInterface" alias="locastic_sylius_translation.controller.translations" />
 
-        <!-- Finder -->
-        <service id="locastic_sylius_translation.finder.migrations" class="Doctrine\Migrations\Finder\GlobFinder" />
-
-        <!-- Forms -->
-        <service id="Locastic\SyliusTranslationPlugin\Form\Type\SearchTranslationType" />
+        <!-- Providers -->
+        <service id="Locastic\SyliusTranslationPlugin\Provider\TranslationFilePathProvider"
+                 decorates="Locastic\SymfonyTranslationBundle\Provider\TranslationFilePathProvider" />
 
         <!-- MenuBuilder -->
         <service id="Locastic\SyliusTranslationPlugin\MenuBuilder\AdminMenuListener">
             <tag name="kernel.event_listener" event="sylius.menu.admin.main" method="addTranslationMenuItem" />
         </service>
 
-        <!-- Providers -->
-        <service id="locastic_sylius_translation.provider.locales"
-                 class="Locastic\SyliusTranslationPlugin\Provider\LocalesProvider" />
-        <service id="Locastic\SyliusTranslationPlugin\Provider\LocalesProviderInterface"
-                 alias="locastic_sylius_translation.provider.locales" />
-
-        <service id="locastic_sylius_translation.provider.themes"
-                 class="Locastic\SyliusTranslationPlugin\Provider\ThemesProvider">
-            <bind key="string $baseDirectory">%kernel.project_dir%</bind>
-        </service>
-        <service id="Locastic\SyliusTranslationPlugin\Provider\ThemesProviderInterface"
-                 alias="locastic_sylius_translation.provider.themes" />
-
-        <service id="locastic_sylius_translation.provider.translation_domains"
-                 class="Locastic\SyliusTranslationPlugin\Provider\TranslationDomainsProvider" />
-        <service id="Locastic\SyliusTranslationPlugin\Provider\TranslationDomainsProviderInterface"
-                 alias="locastic_sylius_translation.provider.translation_domains" />
-
-        <service id="locastic_sylius_translation.provider.translation_file_name"
-                 class="Locastic\SyliusTranslationPlugin\Provider\TranslationFileNameProvider" />
-        <service id="Locastic\SyliusTranslationPlugin\Provider\TranslationFileNameProviderInterface"
-                 alias="locastic_sylius_translation.provider.translation_file_name" />
-
-        <service id="locastic_sylius_translation.provider.translation_file_path"
-                 class="Locastic\SyliusTranslationPlugin\Provider\TranslationFilePathProvider" />
-        <service id="Locastic\SyliusTranslationPlugin\Provider\TranslationFilePathProviderInterface"
-                 alias="locastic_sylius_translation.provider.translation_file_path" />
-
-        <service id="locastic_sylius_translation.provider.translations"
-                 class="Locastic\SyliusTranslationPlugin\Provider\TranslationsProvider">
-            <bind key="string $appTranslationsDirectory">%translator.default_path%/</bind>
-        </service>
-        <service id="Locastic\SyliusTranslationPlugin\Provider\TranslationsProviderInterface"
-                 alias="locastic_sylius_translation.provider.translations" />
-
-        <!-- Savers -->
-        <service id="locastic_sylius_translation.saver.translation_value"
-                 class="Locastic\SyliusTranslationPlugin\Saver\TranslationValueSaver">
-            <bind key="string $directory">%translator.default_path%</bind>
-        </service>
-        <service id="Locastic\SyliusTranslationPlugin\Saver\TranslationValueSaverInterface"
-                 alias="locastic_sylius_translation.saver.translation_value" />
-
-        <!-- TranslationMigration -->
-        <service id="locastic_sylius_translation.migration.executor"
-                 class="Locastic\SyliusTranslationPlugin\TranslationMigration\Executor">
-        </service>
-        <service id="Locastic\SyliusTranslationPlugin\TranslationMigration\ExecutorInterface" alias="locastic_sylius_translation.migration.executor" />
-
-        <!-- Transformers -->
-        <service id="locastic_sylius_translation.transformer.translation_key_to_translation"
-                 class="Locastic\SyliusTranslationPlugin\Transformer\TranslationKeyToTranslationTransformer" />
-        <service id="Locastic\SyliusTranslationPlugin\Transformer\TranslationKeyToTranslationTransformerInterface"
-                 alias="locastic_sylius_translation.transformer.translation_key_to_translation" />
-
-        <service id="locastic_sylius_translation.transformer.translation_value_to_form_field"
-                 class="Locastic\SyliusTranslationPlugin\Transformer\TranslationValueToFormFieldTransformer" />
-        <service id="Locastic\SyliusTranslationPlugin\Transformer\TranslationValueToFormFieldTransformerInterface"
-                 alias="locastic_sylius_translation.transformer.translation_value_to_form_field" />
-
         <!-- Twig Extensions -->
-        <service id="Locastic\SyliusTranslationPlugin\Twig\TranslationExtension">
-            <tag name="twig.extension" />
-        </service>
-
         <service id="Locastic\SyliusTranslationPlugin\Twig\ThemeExtension">
             <tag name="twig.extension" />
         </service>

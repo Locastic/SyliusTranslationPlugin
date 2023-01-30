@@ -1,9 +1,9 @@
 locastic_sylius_translations_admin_index:
     path: /
     methods: [ GET, POST ]
-    controller: locastic_sylius_translation.controller.translations::indexAction
+    controller: Locastic\SyliusTranslationPlugin\Controller\Admin\IndexTranslationAction
 
 locastic_sylius_translation_admin_ajax_update:
     path: /ajax/update
     methods: [ POST ]
-    controller: locastic_sylius_translation.controller.translations::saveAction
+    controller: Locastic\SymfonyTranslationBundle\Controller\SaveTranslationsAction
