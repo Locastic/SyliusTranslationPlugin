@@ -17,7 +17,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0",
-        "locastic/symfony-translation-bundle": "dev-main",
+        "locastic/symfony-translation-bundle": "1.0.0-RC1",
         "sylius/sylius": "1.11.*"
     },
     "require-dev": {
@@ -85,12 +85,5 @@
         "post-create-project-cmd": [
             "php bin/create_node_symlink.php"
         ]
-    },
-    "repositories": {
-        "locastic/symfony-translation-bundle": {
-            "type": "path",
-            "url": "/home/stephane/PhpstormProjects/Locastic/TranslationBundle",
-            "symlink": true
-        }
     }
 }
