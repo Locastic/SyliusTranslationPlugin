@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Locastic\SyliusTranslationPlugin\DependencyInjection;
 
+use Locastic\SyliusTranslationPlugin\Factory\TranslationMigrationFactory;
 use Locastic\SyliusTranslationPlugin\Model\TranslationMigration;
-use Locastic\SymfonyTranslationBundle\Factory\TranslationMigrationFactory;
 use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
 use Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository;
 use Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType;

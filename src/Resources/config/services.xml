@@ -14,6 +14,12 @@
             <tag name="controller.service_arguments" />
         </service>
 
+        <!-- Factories -->
+        <service id="Locastic\SymfonyTranslationBundle\Factory\TranslationMigrationFactory"
+                 class="Locastic\SyliusTranslationPlugin\Factory\TranslationMigrationFactory">
+            <argument>%locastic_sylius_translation.model.translation_migration.class%</argument>
+        </service>
+
         <!-- Providers -->
         <service id="Locastic\SyliusTranslationPlugin\Provider\TranslationFilePathProvider"
                  decorates="Locastic\SymfonyTranslationBundle\Provider\TranslationFilePathProvider" />
