@@ -29,7 +29,7 @@ final class TranslationFilePathProvider implements TranslationFilePathProviderIn
             $theme = $this->themesProvider->getDefaultTheme();
         }
 
-        return $theme->getPath();
+        return $theme->getPath() . '/translations/';
     }
 
     public function getDefaultDirectory(): string

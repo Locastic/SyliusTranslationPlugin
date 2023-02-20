@@ -17,7 +17,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0",
-        "locastic/symfony-translation-bundle": "1.0.0-RC1",
+        "locastic/symfony-translation-bundle": "1.0.0-RC2",
         "sylius/sylius": "1.11.*"
     },
     "require-dev": {
