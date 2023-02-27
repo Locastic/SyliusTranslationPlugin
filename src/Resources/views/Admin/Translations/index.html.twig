@@ -82,7 +82,7 @@
                                                             <b>{{ translationValue.localeCode }}</b>
                                                         </label>
                                                         <textarea id="translations_{{ translation.domainName }}_{{ translation.key }}_{{ translationValue.localeCode }}"
-                                                                  name="translations{{ translationValue|locastic_sylius_translation_value_field_name }}"
+                                                                  name="translations{{ translationValue|locastic_symfony_translation_value_field_name }}"
                                                                   rows="6" cols="45" class="ui input js-translation-input">
                                                             {{- translationValue.value -}}
                                                         </textarea>
