@@ -27,10 +27,6 @@ final class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('driver')->defaultValue(SyliusResourceBundle::DRIVER_DOCTRINE_ORM)->end()
-                ->scalarNode('default_locale')
-                    ->defaultValue('en_US')
-                ->end()
-                ->arrayNode('locales')->scalarPrototype()->end()->end()
             ->end()
         ;
 
