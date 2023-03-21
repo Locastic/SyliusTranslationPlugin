@@ -18,7 +18,7 @@
     "require": {
         "php": "^8.0",
         "locastic/symfony-translation-bundle": "1.0.0-RC4",
-        "sylius/sylius": "1.11.*"
+        "sylius/sylius": "^1.11"
     },
     "require-dev": {
         "behat/behat": "^3.6.1",
